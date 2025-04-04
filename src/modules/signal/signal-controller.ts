@@ -3,6 +3,7 @@ import SignalModel from "../../models/signal-model"
 import { devResponse, errorResponse } from '../../utils/response-util';
 
 export class SignalController{
+  
 static async getAllSignals(req: Request, res: Response) {
   try {
     const { pnl, pair, position } = req.query;

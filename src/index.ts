@@ -6,6 +6,8 @@ import { configDotenv } from "dotenv";
 import secret from "./config/secret-config";
 import "./config/db-config"; // Import database connection
 import errorHandler from "./middleware/error-handler";
+import cron from 'node-cron'
+import { generateRandomSignal } from "./modules/signal/signal-generator";
 
 // Load environment variables
 configDotenv();
@@ -45,4 +47,9 @@ const start = async () => {
   });
 };
 // test auto deploy -- v5
+// Run every 24 hours (at midnight)
+cron.schedule('0 0 * * *', async () => {
+  console.log('⏰ Generating daily signal...');
+  await generateRandomSignal();
+});
 start();
