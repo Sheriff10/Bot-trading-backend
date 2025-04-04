@@ -15,6 +15,7 @@ const secret = {
   MONGODB_URI: getStringConfigValue("MONGODB_URI"),
   JWT_ACCESS_KEY: getStringConfigValue("JWT_ACCESS_KEY"),
   JWT_REFRESH_KEY: getStringConfigValue("JWT_REFRESH_KEY"),
+  TELEGRAM_BOT_TOKEN: getStringConfigValue("TELEGRAM_BOT_TOKEN"),
   NODE_ENV: process.env.NODE_ENV || "development",
 };
 

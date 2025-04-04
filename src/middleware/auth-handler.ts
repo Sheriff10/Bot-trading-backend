@@ -33,6 +33,11 @@ const authHandler = async (req: Request, res: Response, next: NextFunction) => {
     // Store the decoded JWT in req.user
     req.user = decode; // `req.user` should now be recognized by TypeScript
 
+    //       req.session = {
+    //   telegramId: decode.telegramId, 
+    //   userId: decode.user._id 
+    // };
+
     next();
   } catch (error) {
     // console.log(error);

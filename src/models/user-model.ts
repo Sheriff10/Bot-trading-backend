@@ -10,8 +10,8 @@ export interface IUser extends Document {
   completedTask: string[];
   availableBalance: number;
   operatingBalance: number;
-  deposits: IDeposit['_id'][];  
-  withdrawals: IWithdrawal['_id'][];
+  deposits: Types.ObjectId[];  
+  withdrawals: Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,8 +46,8 @@ const UserSchema = new Schema<IUser>(
         ref: "Task",
       },
     ],
-    deposits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Deposit' }],
-    withdrawals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Withdrawal' }]
+    deposits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deposit" }],
+    withdrawals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Withdrawal" }]
   },
   {
     timestamps: true,
