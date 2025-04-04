@@ -1,5 +1,7 @@
 
 import mongoose, { Document, Schema, model, Types } from "mongoose";
+import { IDeposit } from "./deposit-model";
+import { IWithdrawal } from "./withdrawal-model";
 
 export interface IUser extends Document {
   userName: string;
@@ -8,6 +10,8 @@ export interface IUser extends Document {
   completedTask: string[];
   availableBalance: number;
   operatingBalance: number;
+  deposits: IDeposit['_id'][];  
+  withdrawals: IWithdrawal['_id'][];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,6 +46,8 @@ const UserSchema = new Schema<IUser>(
         ref: "Task",
       },
     ],
+    deposits: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Deposit' }],
+    withdrawals: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Withdrawal' }]
   },
   {
     timestamps: true,
