@@ -117,4 +117,20 @@ export class AuthController {
       return errorResponse(res, error.message || "Could not fetch completed tasks");
     }
   }
+
+  static async claimMiningPoints(req: Request, res: Response) {
+  try {
+    const userId = req.session?.userId; // or however you're storing session info
+    const { points } = req.body;
+
+    if (!userId || !points) {
+      return errorResponse(res, "Missing user ID or points");
+    }
+
+    const result = await TelegramAuthService.claimMiningPoints(userId, points);
+    return devResponse(res, result);
+  } catch (error: any) {
+    return errorResponse(res, error.message);
+  }
+}
 }
