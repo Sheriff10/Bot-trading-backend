@@ -87,4 +87,17 @@ export class AuthController {
       return errorResponse(res);
     }
   }
+
+  static async checkUserExists (req: Request, res: Response) {
+  try {
+    const { telegramId } = req.params;
+
+    const exists = await TelegramAuthService.checkUserExistsByTelegramId(Number(telegramId));
+
+    return devResponse(res, { exists });
+  } catch (error) {
+    console.error("Error checking user existence:", error);
+    return errorResponse(res, "Failed to check user");
+  }
+};
 };
