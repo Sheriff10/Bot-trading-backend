@@ -34,8 +34,8 @@ export class TransactionService {
     }
 
     user.deposits.push(deposit._id as Types.ObjectId); // push deposit ref
-    user.availableBalance += amount;
-    user.coinBalance += amount; // or adjust depending on your rules
+    // user.availableBalance += amount;
+    // user.coinBalance += amount; // or adjust depending on your rules
 
     await user.save();
 
