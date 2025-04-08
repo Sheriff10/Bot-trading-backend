@@ -18,7 +18,6 @@ const authHandler = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const token = authHeader.split(" ")[1];
-    
 
     if (!token) {
       return res.status(401).json({ message: "Invalid token format" });
@@ -33,9 +32,9 @@ const authHandler = async (req: Request, res: Response, next: NextFunction) => {
     // Store the decoded JWT in req.user
     req.user = decode; // `req.user` should now be recognized by TypeScript
 
-      req.session = {
-      telegramId: decode.telegramId, 
-      userId: decode.user._id 
+    req.session = {
+      telegramId: decode.telegramId,
+      userId: decode.userId,
     };
 
     next();
