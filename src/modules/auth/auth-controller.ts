@@ -102,4 +102,19 @@ export class AuthController {
       return errorResponse(res, "Failed to check user");
     }
   }
+
+    static async getCompletedTasks(req: Request, res: Response) {
+    try {
+      const userId = req.session.userId;
+
+      if (!userId) {
+        return errorResponse(res, "User not authenticated");
+      }
+
+      const tasks = await TelegramAuthService.getCompletedTasks(userId)
+      return devResponse(res, tasks);
+    } catch (error: any) {
+      return errorResponse(res, error.message || "Could not fetch completed tasks");
+    }
+  }
 }

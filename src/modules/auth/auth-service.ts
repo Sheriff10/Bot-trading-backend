@@ -1,6 +1,8 @@
 import UserModel, { IUser } from "../../models/user-model"
 import crypto from 'crypto';
 import { notFoundResponse } from "../../utils/response-util";
+import mongoose from "mongoose";
+import TaskModel from "../../models/task-model"
 
 interface TelegramUserData {
   id: number;
@@ -66,5 +68,17 @@ export class TelegramAuthService {
     static async checkUserExistsByTelegramId(telegramId: number): Promise<boolean> {
     const user = await UserModel.exists({ telegramId });
     return !!user;
+  }
+
+    static async getCompletedTasks(userId: string) {
+    const user = await UserModel.findById(userId).lean();
+
+    if (!user || !user.completedTask || user.completedTask.length === 0) {
+      return [];
+    }
+    const completedTasks = await TaskModel.find({
+      _id: { $in: user.completedTask.map(id => new mongoose.Types.ObjectId(id)) },
+    });
+    return completedTasks;
   }
 }

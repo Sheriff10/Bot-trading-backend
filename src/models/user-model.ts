@@ -7,11 +7,11 @@ export interface IUser extends Document {
   userName: string;
   telegramId: number;
   coinBalance: number;
-  completedTask: string[];
   availableBalance: number;
   operatingBalance: number;
   deposits: Types.ObjectId[];  
   withdrawals: Types.ObjectId[];
+  completedTask: Types.ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
