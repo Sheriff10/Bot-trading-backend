@@ -68,12 +68,22 @@ export class TransactionService {
     return withdrawal;
   }
 
-    static async getUserTransactions(userId: string) {
-    const deposits = await DepositModel.find({ userId }).lean();
-    const withdrawals = await WithdrawalModel.find({ userId }).lean();
+    static async getUserTransactions(userId: string,  type?: 'deposit' | 'withdrawal') {
+  let deposits: any[] = [];
+  let withdrawals: any[] = [];
+
+  if (!type || type === 'deposit') {
+    deposits = await DepositModel.find({ userId }).lean();
+  }
+
+  if (!type || type === 'withdrawal') {
+    withdrawals = await WithdrawalModel.find({ userId }).lean();
+  }
+    // const deposits = await DepositModel.find({ userId }).lean();
+    // const withdrawals = await WithdrawalModel.find({ userId }).lean();
 
     const formattedDeposits = deposits.map(deposit => ({
-      type: "received",
+      type: "received" ,
       amount: deposit.amount,
       chain: deposit.chain,
       date: deposit.createdAt,
