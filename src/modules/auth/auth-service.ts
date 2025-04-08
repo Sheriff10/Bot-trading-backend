@@ -62,4 +62,9 @@ export class TelegramAuthService {
 
     return user;
   }
+
+    static async checkUserExistsByTelegramId(telegramId: number): Promise<boolean> {
+    const user = await UserModel.exists({ telegramId });
+    return !!user;
+  }
 }
