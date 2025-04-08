@@ -27,9 +27,14 @@ export class TransactionController {
 
   static async getUserTransactions(req: Request, res: Response){
   try {
-    const { userId } = req.params;
 
-    const transactions = await TransactionService.getUserTransactions(userId);
+    const { userId } = req.params;
+    const { type } = req.query;
+
+      if (type && type !== 'deposit' && type !== 'withdrawal') {
+        return errorResponse(res, 'Invalid type');
+    }
+    const transactions = await TransactionService.getUserTransactions(userId, type as 'deposit' | 'withdrawal');
 
     return devResponse(res, transactions);
   } catch (error) {
