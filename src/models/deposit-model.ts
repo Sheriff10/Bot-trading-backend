@@ -4,6 +4,7 @@ import mongoose, { Document, Schema, model, Types } from "mongoose";
 export interface IDeposit extends Document {
   userId: Types.ObjectId;
   hash: string;
+  amount: number;
   date: Date;
   chain: 'Ethereum'| 'Bitcoin'| 'Binance'| 'Polygon'| 'Solana';
   status: 'Confirmed' | 'Declined';
@@ -23,6 +24,9 @@ const DepositSchema = new Schema<IDeposit>(
     required: true, 
     unique: true,  
     trim: true 
+  },
+  amount: {
+    type: Number,
   },
   date: { 
     type: Date, 
