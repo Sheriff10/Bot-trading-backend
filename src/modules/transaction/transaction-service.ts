@@ -1,15 +1,10 @@
-import DepositModel from '../../models/deposit-model';
-import WithdrawalModel from '../../models/withdrawal-model';
-import UserModel from '../../models/user-model';
-import { Types } from 'mongoose';
+import DepositModel from "../../models/deposit-model";
+import WithdrawalModel from "../../models/withdrawal-model";
+import UserModel from "../../models/user-model";
+import { Types } from "mongoose";
 
 export class TransactionService {
-   static async createDeposit(data: {
-    userId: string;
-    hash: string;
-    chain: string;
-    amount: number;
-  }) {
+  static async createDeposit(data: { userId: string; hash: string; chain: string; amount: number }) {
     const { userId, hash, chain, amount } = data;
 
     // 1. Validation - amount should be positive
@@ -29,7 +24,7 @@ export class TransactionService {
       hash,
       chain,
       amount,
-      status: "Confirmed",
+      status: "Pending",
     });
 
     // 4. Update user's deposit list & balances
@@ -51,13 +46,12 @@ export class TransactionService {
       coinBalance: user.coinBalance,
     };
   }
-  static async createWithdrawal(userId: Types.ObjectId, amount: number, chain: string) {
+  static async createWithdrawal(userId: Types.ObjectId, amount: number, chain: string, address: string) {
     const user = await UserModel.findById(userId);
-    if (!user) throw new Error('User not found');
-    if (user.availableBalance < amount) 
-      throw new Error('Insufficient balance');
+    if (!user) throw new Error("User not found");
+    if (user.availableBalance < amount) throw new Error("Insufficient balance");
 
-    const withdrawal = await WithdrawalModel.create({ userId, amount, chain });
+    const withdrawal = await WithdrawalModel.create({ userId, amount, chain, address, status: "Pending" });
 
     // Update user's withdrawal list and balances
     await UserModel.findByIdAndUpdate(userId, {
@@ -68,22 +62,22 @@ export class TransactionService {
     return withdrawal;
   }
 
-    static async getUserTransactions(userId: string,  type?: 'deposit' | 'withdrawal') {
-  let deposits: any[] = [];
-  let withdrawals: any[] = [];
+  static async getUserTransactions(userId: string, type?: "deposit" | "withdrawal") {
+    let deposits: any[] = [];
+    let withdrawals: any[] = [];
 
-  if (!type || type === 'deposit') {
-    deposits = await DepositModel.find({ userId }).lean();
-  }
+    if (!type || type === "deposit") {
+      deposits = await DepositModel.find({ userId }).lean();
+    }
 
-  if (!type || type === 'withdrawal') {
-    withdrawals = await WithdrawalModel.find({ userId }).lean();
-  }
+    if (!type || type === "withdrawal") {
+      withdrawals = await WithdrawalModel.find({ userId }).lean();
+    }
     // const deposits = await DepositModel.find({ userId }).lean();
     // const withdrawals = await WithdrawalModel.find({ userId }).lean();
 
-    const formattedDeposits = deposits.map(deposit => ({
-      type: "received" ,
+    const formattedDeposits = deposits.map((deposit) => ({
+      type: "received",
       amount: deposit.amount,
       chain: deposit.chain,
       date: deposit.createdAt,
@@ -92,7 +86,7 @@ export class TransactionService {
       _id: deposit._id,
     }));
 
-    const formattedWithdrawals = withdrawals.map(withdrawal => ({
+    const formattedWithdrawals = withdrawals.map((withdrawal) => ({
       type: "sent",
       amount: withdrawal.amount,
       chain: withdrawal.chain,
