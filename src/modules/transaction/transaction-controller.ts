@@ -8,7 +8,7 @@ export class TransactionController {
       const userId = req.session.userId;
       const { hash, chain, amount } = req.body;
       const deposit = await TransactionService.createDeposit({ userId, hash, chain, amount });
-      return devResponse(res, deposit);
+      return response(res, 200, deposit);
     } catch (error) {
       console.error("Error fetching signals:", error);
       return errorResponse(res);
@@ -18,8 +18,8 @@ export class TransactionController {
   static async withdraw(req: Request, res: Response) {
     try {
       const userId = req.session.userId;
-      const { amount, chain } = req.body;
-      const withdrawal = await TransactionService.createWithdrawal(userId as any, amount, chain);
+      const { amount, chain, address } = req.body;
+      const withdrawal = await TransactionService.createWithdrawal(userId as any, amount, chain, address);
       return devResponse(res, withdrawal);
     } catch (error) {
       console.error("Error fetching signals:", error);
