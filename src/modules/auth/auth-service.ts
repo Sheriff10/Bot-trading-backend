@@ -77,4 +77,32 @@ export class TelegramAuthService {
     });
     return completedTasks;
   }
+
+  static async claimMiningPoints(userId: string, points: number) {
+    const user = await UserModel.findById(userId);
+    if (!user) throw new Error("User not found");
+
+    const now = new Date();
+
+    if (user.lastMiningClaim) {
+      const diff = now.getTime() - user.lastMiningClaim.getTime();
+      const hoursPassed = diff / (1000 * 60 * 60);
+
+      if (hoursPassed < 24) {
+        throw new Error("You can only claim mining points once every 24 hours.");
+      }
+    }
+
+    user.coinBalance += points;
+    user.lastMiningClaim = now;
+
+    await user.save();
+
+    return {
+      message: "Mining points claimed successfully",
+      updatedBalance: user.coinBalance,
+    };
+  }
 }
+}
+

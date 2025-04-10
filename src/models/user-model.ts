@@ -12,6 +12,7 @@ export interface IUser extends Document {
   deposits: Types.ObjectId[];  
   withdrawals: Types.ObjectId[];
   completedTask: Types.ObjectId[];
+  lastMiningClaim?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,7 +48,11 @@ const UserSchema = new Schema<IUser>(
       },
     ],
     deposits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deposit" }],
-    withdrawals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Withdrawal" }]
+    withdrawals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Withdrawal" }],
+    lastMiningClaim: {
+        type: Date,
+        default: null,
+    }
   },
   {
     timestamps: true,
