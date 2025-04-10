@@ -103,7 +103,7 @@ export class AuthController {
     }
   }
 
-    static async getCompletedTasks(req: Request, res: Response) {
+  static async getCompletedTasks(req: Request, res: Response) {
     try {
       const userId = req.session.userId;
 
@@ -111,7 +111,7 @@ export class AuthController {
         return errorResponse(res, "User not authenticated");
       }
 
-      const tasks = await TelegramAuthService.getCompletedTasks(userId)
+      const tasks = await TelegramAuthService.getCompletedTasks(userId);
       return devResponse(res, tasks);
     } catch (error: any) {
       return errorResponse(res, error.message || "Could not fetch completed tasks");
@@ -119,18 +119,19 @@ export class AuthController {
   }
 
   static async claimMiningPoints(req: Request, res: Response) {
-  try {
-    const userId = req.session?.userId; // or however you're storing session info
-    const { points } = req.body;
+    try {
+      const userId = req.session?.userId; // or however you're storing session info
+      const { points } = req.body;
 
-    if (!userId || !points) {
-      return errorResponse(res, "Missing user ID or points");
+      if (!userId || !points) {
+        return errorResponse(res, "Missing user ID or points");
+      }
+
+      const result = await TelegramAuthService.claimMiningPoints(userId, points);
+      return devResponse(res, result);
+    } catch (error: any) {
+      console.log(error);
+      return errorResponse(res, error.message);
     }
-
-    const result = await TelegramAuthService.claimMiningPoints(userId, points);
-    return devResponse(res, result);
-  } catch (error: any) {
-    return errorResponse(res, error.message);
   }
-}
 }

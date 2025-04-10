@@ -46,5 +46,12 @@ export class ResultService {
       trades: filtered, // optionally return trades
     };
   }
-}
 
+  static async getAllResults() {
+    return ResultModel.find().populate("userId taskId").sort({ date: -1 });
+  }
+
+  static async getResultsByUser(userId: string) {
+    return ResultModel.find({ userId }).populate("taskId").sort({ date: -1 });
+  }
+}
