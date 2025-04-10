@@ -96,7 +96,7 @@ export class AuthController {
 
       const exists = await TelegramAuthService.checkUserExistsByTelegramId(Number(telegramId));
 
-      return devResponse(res, { exists });
+      return response(res, 200, exists);
     } catch (error) {
       console.error("Error checking user existence:", error);
       return errorResponse(res, "Failed to check user");

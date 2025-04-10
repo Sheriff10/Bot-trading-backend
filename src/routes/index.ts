@@ -5,10 +5,11 @@ import signalRoute from "../modules/signal/signal-routes";
 import transactionRoute from "../modules/transaction/transaction-routes";
 import taskRoute from "../modules/task/task-routes";
 import ResultRoute from "../modules/result/result-routes";
+import adminRoutes from "../modules/admin/admin-routes";
 
 const router = Router();
 
-
+router.use(adminRoutes);
 router.use(authRoute);
 router.use(signalRoute);
 router.use(transactionRoute);
