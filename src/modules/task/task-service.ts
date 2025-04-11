@@ -25,7 +25,7 @@ class TaskService {
     if (!user) {
       throw new Error("User  not found");
     }
-        if ( !task) {
+    if (!task) {
       throw new Error(" Task not found");
     }
 
@@ -39,11 +39,29 @@ class TaskService {
     user.coinBalance += task.pointReward;
     user.availableBalance += task.pointReward;
 
-     await user.save();
-      return "Task completed and reward added";
+    await user.save();
+    return "Task completed and reward added";
     //  return { success: true, message: "Task completed", reward: task.pointReward };
   }
-  
+
+  async getCompletedAndUncompletedTasks(userId: string) {
+    const user = await UserModel.findById(userId).populate("completedTask");
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const allTasks = await TaskModel.find().lean();
+    console.log({ allTasks });
+
+    const completedTaskIds = user.completedTask.map((task) => task._id.toString());
+
+    const completed = user.completedTask;
+    const uncompleted = allTasks.filter((task) => !completedTaskIds.includes(task._id.toString()));
+
+    console.log({ completed, uncompleted });
+    return { completed, uncompleted };
+  }
 }
 
 export default new TaskService();

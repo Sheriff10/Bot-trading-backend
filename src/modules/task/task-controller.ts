@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import TaskService from "./task-service";
-import { devResponse, errorResponse } from "../../utils/response-util";
+import response, { devResponse, errorResponse } from "../../utils/response-util";
 
 export class TaskController {
   static async createTask(req: Request, res: Response) {
@@ -12,7 +12,7 @@ export class TaskController {
       }
 
       const task = await TaskService.createTask({ title, pointReward, imageUrl });
-      return devResponse(res, task);
+      return response(res, 200, task);
     } catch (error) {
       console.error("Error creating task:", error);
       return errorResponse(res, "Failed to create task");
@@ -28,6 +28,19 @@ export class TaskController {
     } catch (error) {
       console.error("Task completion failed:", error);
       return errorResponse(res, "Failed to complete task");
+    }
+  }
+
+  static async getUserTasks(req: Request, res: Response) {
+    try {
+      const userId = req.session.userId;
+
+      const tasks = await TaskService.getCompletedAndUncompletedTasks(userId);
+      console.log(tasks);
+      return response(res, 200, tasks);
+    } catch (error) {
+      console.error("Failed to get user tasks:", error);
+      return errorResponse(res, "Failed to retrieve user tasks");
     }
   }
 }
