@@ -52,14 +52,12 @@ class TaskService {
     }
 
     const allTasks = await TaskModel.find().lean();
-    console.log({ allTasks });
 
     const completedTaskIds = user.completedTask.map((task) => task._id.toString());
 
     const completed = user.completedTask;
     const uncompleted = allTasks.filter((task) => !completedTaskIds.includes(task._id.toString()));
 
-    console.log({ completed, uncompleted });
     return { completed, uncompleted };
   }
 }

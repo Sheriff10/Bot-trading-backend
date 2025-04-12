@@ -140,9 +140,6 @@ export class AdminTransactionController {
       if (typeof amount !== "number" || amount <= 0) return badReqResponse(res, "Invalid amount");
       const user = await UserModel.findOne({ telegramId });
       if (!user) return notFoundResponse(res, "User not found");
-      //   user.availableBalance += amount;
-
-      console.log({ telegramId, amount });
       await UserModel.findOneAndUpdate({ telegramId }, { availableBalance: user.availableBalance + Number(amount) });
       await user.save();
       return response(res, 200, user);

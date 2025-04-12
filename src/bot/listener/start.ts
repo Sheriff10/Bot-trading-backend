@@ -28,7 +28,6 @@ bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
     const inviterTelegramId = Number(referral);
     const inviter = await UserModel.findOne({ telegramId: inviterTelegramId });
 
-    console.log({ inviterTelegramId });
     if (inviter) {
       newUser.upline = inviter._id as any;
       await newUser.save();

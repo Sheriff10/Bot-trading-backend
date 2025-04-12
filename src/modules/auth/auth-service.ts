@@ -91,8 +91,6 @@ export class TelegramAuthService {
 
     const upline = await UserModel.findById(user.upline);
 
-    console.log({ upline });
-
     if (upline) {
       upline.coinBalance += points * 0.1;
       await upline.save();

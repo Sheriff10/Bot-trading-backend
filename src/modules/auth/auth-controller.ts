@@ -48,7 +48,6 @@ export class AuthController {
 
   static async getUserById(req: Request, res: Response) {
     try {
-      console.log(req.session);
       const userId = req.session.userId;
 
       const user = await UserModel.findById(userId)
@@ -160,7 +159,6 @@ export class AuthController {
       const expiresAt = now + 86400000; // 24 hrs
 
       roiCache.set(key, { data: result, expiresAt });
-      console.log(result);
 
       return response(res, 200, result);
     } catch (error: any) {
