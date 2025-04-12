@@ -21,5 +21,6 @@ authRoute.post("/users/claim-mining", AuthController.claimMiningPoints);
 authRoute.get("/user", AuthController.getUserById);
 authRoute.get("/users/stats", AuthController.getUserStats);
 authRoute.get("/completed", AuthController.getCompletedTasks);
+authRoute.post("/ping", AuthController.ping);
 
 export default authRoute;

@@ -6,12 +6,14 @@ import UserModel from "../../models/user-model";
 import DepositModel from "../../models/deposit-model";
 import WithdrawalModel from "../../models/withdrawal-model";
 import TaskModel from "../../models/task-model";
+import bot from "../../bot/config/bot";
 
 void DepositModel;
 void WithdrawalModel;
 void TaskModel;
 
 const roiCache = new Map<string, { data: any; expiresAt: number }>();
+const lastPingMap = new Map<number, Date>();
 
 export class AuthController {
   static async telegramLogin(req: Request, res: Response) {
@@ -172,4 +174,37 @@ export class AuthController {
       return errorResponse(res, error.message);
     }
   }
+
+  static ping = async (req: Request, res: Response) => {
+    try {
+      let { telegramIds } = req.body;
+      if (!telegramIds) return res.status(400).json({ message: "telegramIds is required" });
+      if (!Array.isArray(telegramIds)) telegramIds = [telegramIds];
+
+      const now = new Date();
+      const twelveHours = 12 * 60 * 60 * 1000;
+      const message = "Your upline reminds you to mine! Buzz up ⛏️🚀";
+
+      const results = await Promise.all(
+        telegramIds.map(async (id: number) => {
+          if (lastPingMap.has(id)) {
+            const lastPing = lastPingMap.get(id)!;
+            if (now.getTime() - lastPing.getTime() < twelveHours) {
+              return { telegramId: id, status: "skipped", message: "Ping was sent within the last 12 hours" };
+            }
+          }
+          try {
+            await bot.sendMessage(id, message);
+            lastPingMap.set(id, now);
+            return { telegramId: id, status: "sent" };
+          } catch (error: any) {
+            return { telegramId: id, status: "failed", error: error.message };
+          }
+        })
+      );
+      return res.status(200).json({ results });
+    } catch (error: any) {
+      return response(res, 500, error.message);
+    }
+  };
 }
