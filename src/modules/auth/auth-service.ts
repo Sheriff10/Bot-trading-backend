@@ -62,8 +62,8 @@ export class TelegramAuthService {
   }
 
   static async checkUserExistsByTelegramId(telegramId: number): Promise<boolean> {
-    const user = await UserModel.exists({ telegramId });
-    return !!user;
+    const user = await UserModel.findOne({ telegramId });
+    return !!user?.firstTime;
   }
 
   static async getCompletedTasks(userId: string) {
@@ -84,19 +84,17 @@ export class TelegramAuthService {
 
     const now = new Date();
 
-    // if (user.lastMiningClaim) {
-    //   const diff = now.getTime() - user.lastMiningClaim.getTime();
-    //   const hoursPassed = diff / (1000 * 60 * 60);
-
-    //   if (hoursPassed < 24) {
-    //     throw new Error("You can only claim mining points once every 24 hours.");
-    //   }
-    // }
-
     user.coinBalance += points;
     user.lastMiningClaim = now;
 
     await user.save();
+
+    const upline = await UserModel.findById(user.upline);
+
+    if (upline) {
+      upline.coinBalance += points * 0.1;
+      await upline.save();
+    }
 
     return {
       message: "Mining points claimed successfully",

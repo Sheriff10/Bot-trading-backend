@@ -20,10 +20,10 @@ export class TaskController {
   }
   static async completeTask(req: Request, res: Response) {
     try {
+      const userId = req.session.userId;
       const taskId = req.params.taskId;
-      const { userId } = req.body;
 
-      const result = await TaskService.completeTask(userId, taskId);
+      const result = await TaskService.completeTask(userId as any, taskId);
       return devResponse(res, result);
     } catch (error) {
       console.error("Task completion failed:", error);
@@ -36,7 +36,7 @@ export class TaskController {
       const userId = req.session.userId;
 
       const tasks = await TaskService.getCompletedAndUncompletedTasks(userId);
-      console.log(tasks);
+
       return response(res, 200, tasks);
     } catch (error) {
       console.error("Failed to get user tasks:", error);
