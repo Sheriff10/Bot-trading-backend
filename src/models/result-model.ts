@@ -2,7 +2,7 @@ import mongoose, { Document, Schema, model, Types } from "mongoose";
 
 export interface IResult extends Document {
   userId: Types.ObjectId;
-  taskId: Types.ObjectId;
+  taskId: string;
   date: Date;
   amount: number;
   roiPercentage: number;
@@ -18,8 +18,7 @@ const ResultSchema = new Schema<IResult>(
       required: true,
     },
     taskId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Task",
+      type: String,
       required: true,
     },
     date: {

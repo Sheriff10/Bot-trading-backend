@@ -6,9 +6,9 @@ import { configDotenv } from "dotenv";
 import secret from "./config/secret-config";
 import "./config/db-config"; // Import database connection
 import errorHandler from "./middleware/error-handler";
-import cron from 'node-cron'
+import cron from "node-cron";
 import { generateRandomSignal } from "./modules/signal/signal-generator";
-
+import "./jobs";
 // Load environment variables
 configDotenv();
 
@@ -39,17 +39,15 @@ const start = async () => {
   console.log("Connecting to database...");
   app.listen(port, () => {
     const appMessage =
-      secret.NODE_ENV === "development"
-        ? `Trading-Bot Server is running on http://127.0.0.1:${port}`
-        : "App is live!";
+      secret.NODE_ENV === "development" ? `Trading-Bot Server is running on http://127.0.0.1:${port}` : "App is live!";
 
     console.log(appMessage);
   });
 };
 // test auto deploy -- v5
 // Run every 24 hours (at midnight)
-cron.schedule('0 0 * * *', async () => {
-  console.log('⏰ Generating daily signal...');
+cron.schedule("0 0 * * *", async () => {
+  console.log("⏰ Generating daily signal...");
   await generateRandomSignal();
 });
 start();

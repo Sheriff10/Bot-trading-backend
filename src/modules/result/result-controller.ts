@@ -9,7 +9,6 @@ export class ResultController {
       const { chain, fromDate, toDate } = req.query;
 
       const data = await ResultService.getUserTradeStats(userId, {
-        chain: chain as string,
         fromDate: fromDate as string,
         toDate: toDate as string,
       });
