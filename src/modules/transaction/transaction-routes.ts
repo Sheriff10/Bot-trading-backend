@@ -8,5 +8,6 @@ transactionRoute.use(authHandler);
 transactionRoute.post("/transactions/deposit", TransactionController.deposit);
 transactionRoute.post("/transactions/withdraw", TransactionController.withdraw);
 transactionRoute.get("/transactions", TransactionController.getUserTransactions);
+transactionRoute.post("/transactions/transfer", TransactionController.transfer);
 
 export default transactionRoute;
