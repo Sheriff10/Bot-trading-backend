@@ -84,14 +84,14 @@ export class TelegramAuthService {
 
     const now = new Date();
 
-    if (user.lastMiningClaim) {
-      const diff = now.getTime() - user.lastMiningClaim.getTime();
-      const hoursPassed = diff / (1000 * 60 * 60);
+    // if (user.lastMiningClaim) {
+    //   const diff = now.getTime() - user.lastMiningClaim.getTime();
+    //   const hoursPassed = diff / (1000 * 60 * 60);
 
-      if (hoursPassed < 24) {
-        throw new Error("You can only claim mining points once every 24 hours.");
-      }
-    }
+    //   if (hoursPassed < 24) {
+    //     throw new Error("You can only claim mining points once every 24 hours.");
+    //   }
+    // }
 
     user.coinBalance += points;
     user.lastMiningClaim = now;

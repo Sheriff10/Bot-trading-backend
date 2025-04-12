@@ -11,6 +11,8 @@ void DepositModel;
 void WithdrawalModel;
 void TaskModel;
 
+const roiCache = new Map<string, { data: any; expiresAt: number }>();
+
 export class AuthController {
   static async telegramLogin(req: Request, res: Response) {
     try {
@@ -32,6 +34,7 @@ export class AuthController {
         userName: user.userName,
         coinBalance: user.coinBalance,
         availableBalance: user.availableBalance,
+        fundingBalance: user.fundingBalance,
         operatingBalance: user.operatingBalance,
       };
       return devResponse(res, { accessToken, refreshToken, userData });
@@ -47,7 +50,7 @@ export class AuthController {
       const userId = req.session.userId;
 
       const user = await UserModel.findById(userId).select(
-        "userName telegramId coinBalance availableBalance operatingBalance deposits withdrawal createdAt updatedAt"
+        "userName fundingBalance  telegramId coinBalance availableBalance operatingBalance deposits withdrawal createdAt updatedAt"
       );
 
       if (!user) {
@@ -132,6 +135,32 @@ export class AuthController {
     } catch (error: any) {
       console.log(error);
       return errorResponse(res, error.message);
+    }
+  }
+
+  static async roiInvest(req: Request, res: Response) {
+    try {
+      const key = "roi-stats";
+      const now = Date.now();
+      const cached = roiCache.get(key);
+
+      if (cached && cached.expiresAt > now) {
+        return response(res, 200, cached.data);
+      }
+
+      const ROIpercent = parseFloat((Math.random() * 500).toFixed(2));
+      const winRate = parseFloat((Math.random() * 5000).toFixed(2));
+      const Totalpnl = parseFloat((Math.random() * 2000).toFixed(2));
+
+      const result = { ROIpercent, winRate, Totalpnl };
+      const expiresAt = now + 86400000; // 24 hrs
+
+      roiCache.set(key, { data: result, expiresAt });
+      console.log(result);
+
+      return response(res, 200, result);
+    } catch (error: any) {
+      return errorResponse(res, error.message || "Could not fetch ROI stats");
     }
   }
 }

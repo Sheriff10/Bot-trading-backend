@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { TransactionService } from "./transaction-service";
-import response, { devResponse, errorResponse } from "../../utils/response-util";
+import response, { badReqResponse, devResponse, errorResponse, notFoundResponse } from "../../utils/response-util";
+import UserModel from "../../models/user-model";
 
 export class TransactionController {
   static async deposit(req: Request, res: Response) {
@@ -29,7 +30,6 @@ export class TransactionController {
 
   static async getUserTransactions(req: Request, res: Response) {
     try {
-      // const { userId } = req.params;
       const userId = req.session.userId;
       const { type } = req.query;
 
@@ -42,6 +42,50 @@ export class TransactionController {
     } catch (error) {
       console.error("Error fetching transactions:", error);
       return errorResponse(res, "Could not fetch transactions");
+    }
+  }
+
+  static async transfer(req: Request, res: Response) {
+    try {
+      const userId = req.session.userId;
+      const { amount, from, to } = req.body;
+
+      if (!amount || amount <= 0 || !from || !to || from === to) {
+        return badReqResponse(res, "Invalid transfer request");
+      }
+
+      const user = await UserModel.findById(userId);
+      if (!user) return notFoundResponse(res);
+
+      const balanceTypes = ["availableBalance", "fundingBalance", "operatingBalance"];
+
+      if (!balanceTypes.includes(from) || !balanceTypes.includes(to)) {
+        return badReqResponse(res, "Invalid balance types");
+      }
+
+      // @ts-ignore - accessing dynamic property
+      if (user[from] < amount) {
+        return badReqResponse(res, "Insufficient balance");
+      }
+
+      // @ts-ignore - accessing dynamic properties
+      user[from] -= amount;
+      // @ts-ignore
+      user[to] += amount;
+
+      await user.save();
+
+      return devResponse(res, {
+        message: `Transferred ${amount} from ${from} to ${to}`,
+        balances: {
+          availableBalance: user.availableBalance,
+          fundingBalance: user.fundingBalance,
+          operatingBalance: user.operatingBalance,
+        },
+      });
+    } catch (error) {
+      console.error("Error processing transfer:", error);
+      return errorResponse(res, "Failed to transfer balance");
     }
   }
 }

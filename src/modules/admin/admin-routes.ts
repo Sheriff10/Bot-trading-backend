@@ -10,6 +10,6 @@ adminRoutes.get("/admin/user-stats", AdminTransactionController.getUserStats);
 adminRoutes.put("/admin/deposit/status", AdminTransactionController.updateDepositStatus);
 adminRoutes.put("/admin/withdrawal/status", AdminTransactionController.updateWithdrawalStatus);
 adminRoutes.put("/admin/fund-user", AdminTransactionController.fundUserBalance);
-adminRoutes.put("/admin/change-roi", AdminTransactionController.updateWithdrawalStatus);
+adminRoutes.put("/admin/change-roi", AdminTransactionController.updatePercentageAmount);
 
 export default adminRoutes;
