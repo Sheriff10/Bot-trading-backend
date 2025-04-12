@@ -12,6 +12,9 @@ export interface IUser extends Document {
   deposits: Types.ObjectId[];
   withdrawals: Types.ObjectId[];
   completedTask: Types.ObjectId[];
+  invites: Types.ObjectId[];
+  upline: Types.ObjectId;
+  firstTime: boolean;
   lastMiningClaim?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -37,6 +40,12 @@ const UserSchema = new Schema<IUser>(
       type: Number,
       default: 0,
     },
+
+    firstTime: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     operatingBalance: {
       type: Number,
       default: 0,
@@ -51,6 +60,16 @@ const UserSchema = new Schema<IUser>(
         ref: "Task",
       },
     ],
+    invites: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    upline: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     deposits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deposit" }],
     withdrawals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Withdrawal" }],
     lastMiningClaim: {

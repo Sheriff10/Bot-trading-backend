@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import morgan from "morgan"; // Import Morgan
 import appRouter from "./routes";
@@ -8,7 +8,10 @@ import "./config/db-config"; // Import database connection
 import errorHandler from "./middleware/error-handler";
 import cron from "node-cron";
 import { generateRandomSignal } from "./modules/signal/signal-generator";
+
 import "./jobs";
+import "./bot";
+import bot from "./bot/config/bot";
 // Load environment variables
 configDotenv();
 
@@ -44,10 +47,12 @@ const start = async () => {
     console.log(appMessage);
   });
 };
+
 // test auto deploy -- v5
 // Run every 24 hours (at midnight)
 cron.schedule("0 0 * * *", async () => {
   console.log("⏰ Generating daily signal...");
   await generateRandomSignal();
 });
+
 start();

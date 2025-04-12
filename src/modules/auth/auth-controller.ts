@@ -49,9 +49,11 @@ export class AuthController {
       console.log(req.session);
       const userId = req.session.userId;
 
-      const user = await UserModel.findById(userId).select(
-        "userName fundingBalance  telegramId coinBalance availableBalance operatingBalance deposits withdrawal createdAt updatedAt"
-      );
+      const user = await UserModel.findById(userId)
+        .select(
+          "userName fundingBalance  invites telegramId coinBalance availableBalance operatingBalance deposits withdrawal createdAt updatedAt"
+        )
+        .populate("invites");
 
       if (!user) {
         return notFoundResponse(res, "User not found");
@@ -161,6 +163,13 @@ export class AuthController {
       return response(res, 200, result);
     } catch (error: any) {
       return errorResponse(res, error.message || "Could not fetch ROI stats");
+    }
+  }
+  static async getInvites(req: Request, res: Response) {
+    try {
+      const userId = req.session.userId;
+    } catch (error: any) {
+      return errorResponse(res, error.message);
     }
   }
 }
