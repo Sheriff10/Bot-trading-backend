@@ -1,4 +1,3 @@
-
 import mongoose, { Document, Schema, model, Types } from "mongoose";
 import { IDeposit } from "./deposit-model";
 import { IWithdrawal } from "./withdrawal-model";
@@ -7,11 +6,16 @@ export interface IUser extends Document {
   userName: string;
   telegramId: number;
   coinBalance: number;
-  completedTask: string[];
   availableBalance: number;
   operatingBalance: number;
-  deposits: Types.ObjectId[];  
+  fundingBalance: number;
+  deposits: Types.ObjectId[];
   withdrawals: Types.ObjectId[];
+  completedTask: Types.ObjectId[];
+  invites: Types.ObjectId[];
+  upline: Types.ObjectId;
+  firstTime: boolean;
+  lastMiningClaim?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,7 +40,17 @@ const UserSchema = new Schema<IUser>(
       type: Number,
       default: 0,
     },
+
+    firstTime: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     operatingBalance: {
+      type: Number,
+      default: 0,
+    },
+    fundingBalance: {
       type: Number,
       default: 0,
     },
@@ -46,13 +60,27 @@ const UserSchema = new Schema<IUser>(
         ref: "Task",
       },
     ],
+    invites: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    upline: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     deposits: [{ type: mongoose.Schema.Types.ObjectId, ref: "Deposit" }],
-    withdrawals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Withdrawal" }]
+    withdrawals: [{ type: mongoose.Schema.Types.ObjectId, ref: "Withdrawal" }],
+    lastMiningClaim: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model<IUser>("User", UserSchema);
-
+const UserModel = mongoose.model<IUser>("User", UserSchema);
+export default UserModel;

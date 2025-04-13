@@ -1,10 +1,11 @@
-
+import { required } from "joi";
 import mongoose, { Document, Schema, model, Types } from "mongoose";
 
 export interface ITask extends Document {
   title: string;
   pointReward: number;
   imageUrl: string;
+  link: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +24,10 @@ const TaskSchema = new Schema<ITask>(
       type: String,
       required: true,
     },
+    link: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -30,4 +35,3 @@ const TaskSchema = new Schema<ITask>(
 );
 
 export default mongoose.model<ITask>("Task", TaskSchema);
-
