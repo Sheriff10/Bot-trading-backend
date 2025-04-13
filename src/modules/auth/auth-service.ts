@@ -53,11 +53,16 @@ export class TelegramAuthService {
         completedTask: [],
         deposits: [],
         withdrawals: [],
+        firstTime: true,
       });
 
       await user.save();
     }
 
+    if (user && user.firstTime === false) {
+      user.firstTime = true;
+      await user.save();
+    }
     return user;
   }
 
