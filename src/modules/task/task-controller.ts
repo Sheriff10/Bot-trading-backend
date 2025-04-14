@@ -5,13 +5,14 @@ import response, { devResponse, errorResponse } from "../../utils/response-util"
 export class TaskController {
   static async createTask(req: Request, res: Response) {
     try {
-      const { title, pointReward, imageUrl } = req.body;
+      const { title, pointReward, imageUrl, link } = req.body;
+      console.log(req.body);
 
-      if (!title || !imageUrl || !pointReward || pointReward <= 0) {
+      if (!title || !pointReward || pointReward <= 0) {
         return errorResponse(res, "Invalid request");
       }
 
-      const task = await TaskService.createTask({ title, pointReward, imageUrl });
+      const task = await TaskService.createTask({ title, pointReward, imageUrl: imageUrl ?? "", link });
       return response(res, 200, task);
     } catch (error) {
       console.error("Error creating task:", error);
