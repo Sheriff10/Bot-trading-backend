@@ -4,6 +4,7 @@ import WithdrawalModel from "../../models/withdrawal-model";
 import UserModel from "../../models/user-model";
 import response, { badReqResponse, errorResponse, notFoundResponse } from "../../utils/response-util";
 import RoiModel from "../../models/roi-model";
+import AddressModel, { IAddress } from "../../models/address-model";
 
 export class AdminTransactionController {
   static updateDepositStatus = async (req: Request, res: Response) => {
@@ -145,6 +146,45 @@ export class AdminTransactionController {
       return response(res, 200, user);
     } catch (error) {
       return errorResponse(res, "Failed to fund user balance");
+    }
+  };
+
+  static getAllAddresses = async (req: Request, res: Response) => {
+    try {
+      const addressData: IAddress | null = await AddressModel.findOne();
+      if (!addressData) {
+        return res.status(404).json({ message: "No network addresses found" });
+      }
+      response(res, 200, { addressConfig: addressData.addressConfig });
+    } catch (err: any) {
+      return errorResponse(res, "Failed to fetch addresses");
+    }
+  };
+  static updateAddress = async (req: Request, res: Response) => {
+    try {
+      const { chain, address } = req.body;
+      const addressId = "67fcce44cbdcd3c4403349ff";
+
+      if (!chain || !address) {
+        return badReqResponse(res, "Chain and address are required");
+      }
+      const addressDoc = await AddressModel.findById(addressId);
+      if (!addressDoc) {
+        return notFoundResponse(res, "Address configuration not found");
+      }
+      const existingIndex = addressDoc.addressConfig.findIndex((item) => item.chain === chain);
+
+      if (existingIndex !== -1) {
+        addressDoc.addressConfig[existingIndex].address = address;
+      } else {
+        addressDoc.addressConfig.push({ chain, address });
+      }
+
+      await addressDoc.save();
+      return response(res, 200, "Updated successfully");
+    } catch (error) {
+      console.log(error);
+      return errorResponse(res, "Failed to update address");
     }
   };
 }
