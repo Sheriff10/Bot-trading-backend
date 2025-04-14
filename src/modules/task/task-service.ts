@@ -4,15 +4,15 @@ import UserModel from "../../models/user-model";
 import response from "../../utils/response-util";
 
 class TaskService {
-  async createTask(data: { title: string; pointReward: number; imageUrl: string }): Promise<ITask> {
-    const { title, pointReward, imageUrl } = data;
+  async createTask(data: { title: string; pointReward: number; imageUrl: string; link: string }): Promise<ITask> {
+    const { title, pointReward, imageUrl, link } = data;
 
     // Basic validation (optional here if validated in controller or with middleware)
-    if (!title || !imageUrl || pointReward <= 0) {
+    if (!title || pointReward <= 0) {
       throw new Error("Invalid task data");
     }
 
-    const newTask = await TaskModel.create({ title, pointReward, imageUrl });
+    const newTask = await TaskModel.create({ title, pointReward, imageUrl: "link", link });
     return newTask;
   }
 
