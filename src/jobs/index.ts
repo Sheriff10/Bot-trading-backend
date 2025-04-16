@@ -1,7 +1,7 @@
 import cron from "node-cron";
 import { fundUsersWithRoi } from "./helper/result-funding";
 
-cron.schedule("0 */3 * * *", async () => {
+cron.schedule("0 0,12 * * *", async () => {
   console.log(`[${new Date().toISOString()}] Running task every 3 hours`);
 
   try {
