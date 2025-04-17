@@ -11,7 +11,7 @@ bot.onText(/\/start(?:\s+(.+))?/, async (msg, match) => {
 
   const options = {
     reply_markup: {
-      inline_keyboard: [[{ text: "Launch app", web_app: { url: "https://ai-trading-bot.netlify.app/" } }]],
+      inline_keyboard: [[{ text: "Launch app", web_app: { url: "https://evohive.org/" } }]],
     },
   };
 
